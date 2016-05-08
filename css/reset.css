@@ -1,4 +1,4 @@
-/* 重置&默认(reset&base)(tags) */
+/* 重置&默认(reset&base)(tags)(for telephone) */
 *[hidefocus],input,textarea,a{outline:none;}
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td{padding:0;margin:0;}
 fieldset,img,html,body,iframe{border:0;}
