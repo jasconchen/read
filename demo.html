@@ -308,21 +308,6 @@
 				<div class="child-mod">
 					<span>背景</span>
 					<ul id="bk-container" class="bk-container-ul">
-						<li>
-							<div class="current"></div>
-						</li>
-						<li>
-							<div class="current"></div>
-						</li>
-						<li>
-							<div class="current"></div>
-						</li>
-						<li>
-							<div class="current"></div>
-						</li>
-						<li>
-							<div class="current"></div>
-						</li>
 					</ul>
 				</div>
 			</div>
@@ -370,10 +355,45 @@
 				}
 				RootContainer.css('font-size', initFontSize);
 
+				var ModuleFontSwitch=(function(){	
+
+					var colorArr = [{
+						value:'#F7EEE5',
+                        name : '米白'
+					},{
+						value:'#E9DFC7',
+                        name : '纸张'
+					},{
+						value:'#A4A4A4',
+                        name : '浅灰'
+					},{
+						value:'#CDEFCE',
+                        name : '护眼'
+					},{
+						value:'#283548',
+                        name:'灰蓝'
+					},{
+                        value:'#0f1410',
+                        name:'夜间'
+                    }];
+
+
+					var bkCurColor=initBgColor=Util.StorageGetter('background_color');
+					var fontColor=Util.StorageGetter('font_color');
+					for (var i = 0; i < colorArr.length; i++) {
+						var display='none'
+						if (bkCurColor == colorArr[i].value) {
+							display='block';
+						}
+						Dom.bk_container.append('<li data-bottom-color="'+colorArr[i].value+'"><div class="current" style="display:'+display+'"></div></li>');
+					}
+					$('body').css('background', initBgColor);
+
+				})();
+
+
 				// 默认夜间模式为false
 				var NightMod=false;
-
-
 
 				function main(){
 					//todo 整个项目的入口函数
@@ -431,23 +451,11 @@
 					});
 
 					Dom.bk_container.delegate('li', 'click', function() {
-						// 存储背景颜色
-						var colorArr=[{
-							value: '#F7EEE5'
-						},{
-							value: '#E9DFC7'
-						},{
-							value: '#A4A4A4'
-						},{
-							value: '#CDEFCE'
-						},{
-							value: '#283548'
-						}];
-						$(this).data('bottomColor', colorArr[i].value);
 						var bottomColor=$(this).data('bottomColor');
 						Dom.bk_container.find('.current').hide();
 						$(this).find('.current').show();
-						$('body').css('background-color', color);
+						$('body').css('background-color', bottomColor);
+						Util.StorageSetter('background_color', bottomColor);
 					});
 
 					$('#large-font').click(function(){
