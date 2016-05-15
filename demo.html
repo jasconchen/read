@@ -337,9 +337,10 @@
 							cache : true,
 							callback : 'duokan_fiction_chapter',
 							success :  function(result){
+								debugger
 								var data=$.base64.decode(result);
 								var json=decodeURLComponent(escape(data));
-								callback(json);
+								callback(data);
 							}
 						})
 					}
@@ -361,17 +362,17 @@
 						})
 					}
 					var getFictionInfo=function(callback){
-						$.ajax('data/chapter.json', function(data){
+						$.get('data/chapter.json', function(data){
 							// todo 获得章节信息之后的回调
-							Chapter_id=data.chapters[1].Chapter_id
+							Chapter_id=data.chapters[1].chapter_id;
 							callback && callback();
 						}, 'json')
 					}
-					var getCurChaperContent=function(chapter_id){
-						$.get('data/data' + chapter_id + '.json', function(){
+					var getCurChaperContent=function(chapter_id, data){
+						$.get('data/data' + chapter_id + '.json', function(data){
 							if (data.result == 0) {
 								var url=data.jsonp;
-								Util.getBSONP(url, function(data, callback){
+								Util.getBSONP(url, function(data){
 									callback && callback(data);
 								})
 							}
