@@ -253,16 +253,6 @@
 			</div>
 			<div id="fition_chapter_title"></div>
 			<div id="fition_container" class="m-read-content">
-				<h4>那我只好试一下了</h4>
-				<p>“是么？那我只好试一下了。”被称为天冥子的男子不以为意，他右手一翻，一尊外形古朴的宝塔出现在他的手心，这是荒洪灵宝封神塔，可以封神锁魔，也可以作为容器容纳数万战士，半月前，男子就是凭借着降神塔携带来自神域不同势力的一万多名神域强者突然出现在芊羽圣地，将其毁灭。</p>
-				<p>“是么？那我只好试一下了。”被称为天冥子的男子不以为意，他右手一翻，一尊外形古朴的宝塔出现在他的手心，这是荒洪灵宝封神塔，可以封神锁魔，也可以作为容器容纳数万战士，半月前，男子就是凭借着降神塔携带来自神域不同势力的一万多名神域强者突然出现在芊羽圣地，将其毁灭。</p>
-				<p>“是么？那我只好试一下了。”被称为天冥子的男子不以为意，他右手一翻，一尊外形古朴的宝塔出现在他的手心，这是荒洪灵宝封神塔，可以封神锁魔，也可以作为容器容纳数万战士，半月前，男子就是凭借着降神塔携带来自神域不同势力的一万多名神域强者突然出现在芊羽圣地，将其毁灭。</p>
-				<p>“是么？那我只好试一下了。”被称为天冥子的男子不以为意，他右手一翻，一尊外形古朴的宝塔出现在他的手心，这是荒洪灵宝封神塔，可以封神锁魔，也可以作为容器容纳数万战士，半月前，男子就是凭借着降神塔携带来自神域不同势力的一万多名神域强者突然出现在芊羽圣地，将其毁灭。</p>
-				<p>“是么？那我只好试一下了。”被称为天冥子的男子不以为意，他右手一翻，一尊外形古朴的宝塔出现在他的手心，这是荒洪灵宝封神塔，可以封神锁魔，也可以作为容器容纳数万战士，半月前，男子就是凭借着降神塔携带来自神域不同势力的一万多名神域强者突然出现在芊羽圣地，将其毁灭。</p>
-				<p>“是么？那我只好试一下了。”被称为天冥子的男子不以为意，他右手一翻，一尊外形古朴的宝塔出现在他的手心，这是荒洪灵宝封神塔，可以封神锁魔，也可以作为容器容纳数万战士，半月前，男子就是凭借着降神塔携带来自神域不同势力的一万多名神域强者突然出现在芊羽圣地，将其毁灭。</p>
-				<p>“是么？那我只好试一下了。”被称为天冥子的男子不以为意，他右手一翻，一尊外形古朴的宝塔出现在他的手心，这是荒洪灵宝封神塔，可以封神锁魔，也可以作为容器容纳数万战士，半月前，男子就是凭借着降神塔携带来自神域不同势力的一万多名神域强者突然出现在芊羽圣地，将其毁灭。</p>
-				<p>“是么？那我只好试一下了。”被称为天冥子的男子不以为意，他右手一翻，一尊外形古朴的宝塔出现在他的手心，这是荒洪灵宝封神塔，可以封神锁魔，也可以作为容器容纳数万战士，半月前，男子就是凭借着降神塔携带来自神域不同势力的一万多名神域强者突然出现在芊羽圣地，将其毁灭。</p>
-				<p>“是么？那我只好试一下了。”被称为天冥子的男子不以为意，他右手一翻，一尊外形古朴的宝塔出现在他的手心，这是荒洪灵宝封神塔，可以封神锁魔，也可以作为容器容纳数万战士，半月前，男子就是凭借着降神塔携带来自神域不同势力的一万多名神域强者突然出现在芊羽圣地，将其毁灭。</p>
 			</div>
 			<div class="m-button-bar">
 				<ul class="u-tab">
@@ -337,10 +327,9 @@
 							cache : true,
 							callback : 'duokan_fiction_chapter',
 							success :  function(result){
-								debugger
 								var data=$.base64.decode(result);
-								var json=decodeURLComponent(escape(data));
-								callback(data);
+								var json=decodeURIComponent(escape(data));
+								callback(json);
 							}
 						})
 					}
@@ -354,10 +343,10 @@
 				function ReaderModel(){
 					//todo 实现和阅读器相关的数据交互的方法
 					var Chapter_id;
-					var init=function(){
+					var init=function(UIcallback){
 						getFictionInfo(function(){
-							getCurChaperContent(Chapter_id, function(){
-
+							getCurChaperContent(Chapter_id, function(data){
+								UIcallback && UIcallback(data);
 							})
 						})
 					}
@@ -368,11 +357,11 @@
 							callback && callback();
 						}, 'json')
 					}
-					var getCurChaperContent=function(chapter_id, data){
+					var getCurChaperContent=function(chapter_id, callback){
 						$.get('data/data' + chapter_id + '.json', function(data){
 							if (data.result == 0) {
 								var url=data.jsonp;
-								Util.getBSONP(url, function(data){
+								Util.getBSONP(url, function(data){	
 									callback && callback(data);
 								})
 							}
@@ -384,8 +373,19 @@
 					}
 				}
 
-				function ReaderBaseFrame(){
+				function ReaderBaseFrame(container){
 					//todo 渲染基本的UI结构
+					function parseChapterData(jsonData){
+						var jsonObj=JSON.parse(jsonData);
+						var html='<h4>'+jsonObj.t+'</h4>';
+						for (var i = 0; i < jsonObj.p.length; i++) {
+							html+='<p>'+jsonObj.p[i]+'</p>'
+						}
+						return html;
+					}
+					return function (data){
+						container.html(parseChapterData(data));
+					}
 				}
 
 				var RootContainer=$('#fition_container');
@@ -409,7 +409,11 @@
 				function main(){
 					//todo 整个项目的入口函数
 					var readerModel=ReaderModel();
-					readerModel.init();
+					var readerUI=ReaderBaseFrame(RootContainer);
+					
+					readerModel.init(function(data){
+					    readerUI(data);
+					});
 					ModuleFontSwitch();
 					EvenHanlder();
 				}
