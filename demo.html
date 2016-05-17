@@ -343,6 +343,7 @@
 				function ReaderModel(){
 					//todo 实现和阅读器相关的数据交互的方法
 					var Chapter_id;
+					var ChapterTotal;
 					var init=function(UIcallback){
 						getFictionInfo(function(){
 							getCurChaperContent(Chapter_id, function(data){
@@ -354,6 +355,7 @@
 						$.get('data/chapter.json', function(data){
 							// todo 获得章节信息之后的回调
 							Chapter_id=data.chapters[1].chapter_id;
+							ChapterTotal=data.chapters.length;
 							callback && callback();
 						}, 'json')
 					}
@@ -367,9 +369,27 @@
 							}
 						}, 'json')
 					}
+					var prevChapter=function(UIcallback){
+						Chapter_id=parseInt(Chapter_id,10);
+						if(Chapter_id == 0){
+							return;
+						}
+						Chapter_id-=1;
+						getCurChaperContent(Chapter_id, UIcallback);
+					}
+					var nextChapter=function(UIcallback){
+						Chapter_id=parseInt(Chapter_id,10);
+						if(Chapter_id == ChapterTotal){
+							return;
+						}
+						Chapter_id+=1;
+						getCurChaperContent(Chapter_id, UIcallback);
+					}
 
 					return {
-						init : init
+						init : init,
+						prevChapter : prevChapter,
+						nextChapter : nextChapter
 					}
 				}
 
@@ -399,6 +419,8 @@
 				}
 				var Win=$(window);
 				var Doc=$(document);
+				var readerModel;
+				var readerUI;
 				
 				// 初始化字体
 				var initFontSize;
@@ -408,8 +430,8 @@
 
 				function main(){
 					//todo 整个项目的入口函数
-					var readerModel=ReaderModel();
-					var readerUI=ReaderBaseFrame(RootContainer);
+					readerModel=ReaderModel();
+					readerUI=ReaderBaseFrame(RootContainer);
 					
 					readerModel.init(function(data){
 					    readerUI(data);
@@ -510,6 +532,19 @@
 						Dom.font_container.hide();
 						Dom.font_button.find('.icon-font').removeClass('current');
 					});
+					
+					$('#prev_btn').click(function(){
+						//todo...获得章节的翻页数据->把数据拿出来
+						readerModel.prevChapter(function(data){
+							readerUI(data);
+						});
+					})
+					$('#next_btn').click(function(){
+						//todo...获得章节的翻页数据->把数据拿出来
+						readerModel.nextChapter(function(data){
+							readerUI(data);
+						});
+					})
 				}
 
 
